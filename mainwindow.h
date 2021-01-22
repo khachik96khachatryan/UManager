@@ -15,6 +15,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void show_project(const QString& dir ="/home/linux/Documents/TextPars/Users.json");
 private:
     void LoadJson(const QString& dir);
 
@@ -22,10 +23,14 @@ private:
 
     void showWidget();
 
+    void find_(const QString& str);
+
 private slots:
     void on_exitButton_clicked();
     void on_actionOpen_file_json_triggered();
     void on_actionExit_triggered();
+
+    void on_findButton_clicked();
 
 private:
     Ui::MainWindow *ui;

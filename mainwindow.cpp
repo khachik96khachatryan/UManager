@@ -6,9 +6,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    LoadJson("/home/linux/Documents/TextPars/Users.json");
-    read();
-    showWidget();
 }
 
 MainWindow::~MainWindow()
@@ -16,22 +13,15 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_exitButton_clicked()
-{
-   exit(1);
-}
-
 void MainWindow::LoadJson(const QString &dir){
     QFile jsonFile(dir);
     if(!jsonFile.open(QIODevice::ReadOnly)){ // Try Catch
-        /*int checkCode = criticalMsgBox_("file not found","please select a file or file does not match ");
-        if(checkCode == QMessageBox :: Yes){
-            MainWindow::on_actionOpen_file_json_triggered();
-        }else if(checkCode == QMessageBox ::No){
-            exit(1);
-        }else{
-            exit(0);
-        }*/
+      int check = QMessageBox::critical(0,"Json Error","@ntrel nor json file?",QMessageBox::Cancel| QMessageBox::Yes);
+
+      if(check == QMessageBox::Yes){
+          MainWindow::on_actionOpen_file_json_triggered();
+          return;
+      }
     }
     QByteArray saveData = jsonFile.readAll();
     QJsonDocument jsonDocument(QJsonDocument::fromJson(saveData));
@@ -79,24 +69,52 @@ void MainWindow::showWidget(){
       rowIterator++;
       i++;
     }
-
 }
+
+void MainWindow::find_(const QString &str){
+
+    if(str.length() == 0){
+        showWidget();
+        return;
+    }
+    ui->userTableWidget->setColumnCount(userList.begin()->size());
+    ui->userTableWidget->setRowCount(0);
+    int rowcount = 1;
+    auto rowIterator = userList.begin();
+    int col = userList.begin()->size();
+    int i = 0;
+    while (rowIterator != userList.end()){
+      auto t = rowIterator->begin();
+      if(t->toLower().contains(str.toLower())){
+          ui->userTableWidget->setRowCount(rowcount);
+          rowcount++;
+          for (int j = 0; j < col; ++j) {
+              itemUser = new QTableWidgetItem;
+              itemUser->setText(*t);
+              qDebug()<<"Cout = "<<rowcount;
+              ui->userTableWidget->setItem(i,j,itemUser);
+              t++;
+          }
+          i++;
+      }
+      rowIterator++;
+    }
+
+    qDebug()<<"Cout = "<<rowcount;
+}
+
 
 void MainWindow::on_actionOpen_file_json_triggered()
 {
     QString FileDir = QFileDialog::getOpenFileName(this,"Open Json File",QString(),"*json");
     if(FileDir.isEmpty()){ // Try Catch
-       /*int checkCode = criticalMsgBox_("file not found","please select a file or file does not match ");
-
-        if(checkCode == QMessageBox :: Yes){
-            MainWindow::on_actionOpen_file_json_triggered();
-        }else if(checkCode == QMessageBox ::No){
-            exit(1);
-        }else{
-            exit(0);
-        }**/
+        return;
     }
-    LoadJson(FileDir);
+    show_project(FileDir);
+}
+
+void MainWindow::show_project(const QString& dir){
+    LoadJson(dir);
     read();
     showWidget();
 }
@@ -104,4 +122,12 @@ void MainWindow::on_actionOpen_file_json_triggered()
 void MainWindow::on_actionExit_triggered()
 {
         exit(1);
+}
+
+void MainWindow::on_findButton_clicked()
+{
+    const QString str = ui->findLineEdit->text();
+    ui->userTableWidget->clear();
+    find_(str);
+
 }
