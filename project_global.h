@@ -1,5 +1,7 @@
 #ifndef PROJECT_GLOBAL_H
 #define PROJECT_GLOBAL_H
+
+
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -13,23 +15,10 @@
 #include <QTableWidgetItem>
 #include <set>
 #include <vector>
-
 #include <QMessageBox>
 
+typedef std::multiset<QVector<QString>> ListType;
 
-/*
-int criticalMsgBox_(const QString& heading,const QString& message){
-    QMessageBox msgBox;
-    msgBox.critical(nullptr,heading,message);
-    return 1;
-}
-
-int criticalMsgBox_(const QString& heading,const QString& message){
-    QMessageBox msgBox;
-    int n = msgBox.critical(nullptr,heading,message,QMessageBox::Yes | QMessageBox::No);
-
-    return n;
-}*/
-
+typedef ListType::iterator  vecStrIter;
 
 #endif // PROJECT_GLOBAL_H

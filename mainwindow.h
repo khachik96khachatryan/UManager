@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "project_global.h"
+#include "umanager.h"
 namespace Ui {
 class MainWindow;
 }
@@ -14,29 +14,19 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
-    void show_project(const QString& dir ="/home/linux/Documents/TextPars/Users.json");
-private:
-    void LoadJson(const QString& dir);
-
-    void read();
-
-    void showWidget();
-
+    void showTable();
     void find_(const QString& str);
-
 private slots:
-    void on_exitButton_clicked();
-    void on_actionOpen_file_json_triggered();
+    void on_findButton_clicked();
+
     void on_actionExit_triggered();
 
-    void on_findButton_clicked();
+    void on_actionOpen_json_triggered();
 
 private:
     Ui::MainWindow *ui;
-    std::multiset<QVector<QString>> userList;
+    UManager       *um;
     QTableWidgetItem    *itemUser;
-    QJsonObject     jsonObject;
 };
 
 #endif // MAINWINDOW_H
