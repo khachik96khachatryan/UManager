@@ -1,7 +1,6 @@
 #ifndef PROJECT_GLOBAL_H
 #define PROJECT_GLOBAL_H
 
-
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>

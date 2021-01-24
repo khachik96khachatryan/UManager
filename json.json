@@ -1,0 +1,36 @@
+{
+    "info":"Task Interview",
+    "Start":"20.01.2021",
+    "Deadline":"27.01.2021",
+    "users":
+    [
+        {   
+            "username" : "Khachik",
+            "lastname" : "Khachatryan",
+            "age"      : 25,
+            "address"  : "Dvin"
+            
+        },
+        {
+     
+            "username" : "Vardan",
+            "lastname" : "Mamikonyan",
+            "age"      : 1633,
+            "address"  : "Armenia"  
+        },
+        {
+     
+            "username" : "Anush",
+            "lastname" : "Petrosyan",
+            "age"      : 28,
+            "address"  : "Armenia"  
+        },
+        {
+     
+            "username" : "Artak",
+            "lastname" : "Markosyan",
+            "age"      : 33,
+            "address"  : "Armenia"  
+        }
+    ]
+}

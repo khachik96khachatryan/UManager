@@ -8,11 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->userTableWidget->clear();
-    if(um->LoadJson()){
-        ui->userTableWidget->setColumnCount(um->getColumCount());
-        ui->userTableWidget->setHorizontalHeaderLabels(um->getRowsName());
-        showTable();
-    }
+    MainWindow::setWindowTitle("UManager");
 }
 
 MainWindow::~MainWindow()
@@ -24,13 +20,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::showTable(){
     ui->userTableWidget->setRowCount(um->getRowCount());
+    if(!um->getRowCount()){
+        return;
+    }
     ListType::iterator rowIterator = um->cBegin();
-    int col = um->cBegin()->size();
+    int columCount = um->cBegin()->size();
     int i = 0;
 
     while (rowIterator != um->cEnd()) {
       auto tempIter = rowIterator->cbegin();
-      for (int j = 0; j < col; ++j) {
+      for (int j = 0; j < columCount; ++j) {
           itemUser = new QTableWidgetItem;
           itemUser->setText(*tempIter);
           ui->userTableWidget->setItem(i,j,itemUser);
@@ -42,6 +41,7 @@ void MainWindow::showTable(){
 }
 
 void MainWindow::find_(const QString &str){
+
 
     if(str.length() == 0){
          showTable();

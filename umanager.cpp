@@ -37,7 +37,7 @@ bool UManager::LoadJson(const QString& dir){
     QFile jsonFile(dir);
 
     if(!jsonFile.open(QIODevice::ReadOnly)){ // Try Catch
-        QMessageBox::critical(0,"Json file not selected","please select a file");
+        QMessageBox::critical(0,"Permission denied","Failed to open file:");
           return false;
 
        }
@@ -47,8 +47,8 @@ bool UManager::LoadJson(const QString& dir){
        this->jsonObject = jsonDocument.object();
        if(this->jsonObject.empty())
        {
-           QMessageBox::critical(0,"Json file Error","File does not match\nOr Json syntax error ");
-           return false;
+           QMessageBox::warning(0,"Json file Error","File does not match\nOr Json syntax error ");
+           return true;
        }
        Json_to_Stl_Set();
        return true;

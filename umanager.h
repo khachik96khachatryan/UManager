@@ -10,7 +10,7 @@ class UManager
 public:
     UManager();
 
-    bool LoadJson(const QString& dir ="/home/linux/Documents/TextPars/Users.json");
+    bool LoadJson(const QString& dir);
 
     int getColumCount();
     int getRowCount();
