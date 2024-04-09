@@ -1,0 +1,195 @@
+#include <QtWidgets>
+#include <QRandomGenerator>
+
+#include <QAbstractTableModel>
+#include <QColor>
+#include <QRandomGenerator>
+#include <QPainter>
+#include <QStyledItemDelegate>
+#include <QHBoxLayout>
+#include <QTableView>
+
+class CustomTableModel : public QAbstractTableModel {
+public:
+    CustomTableModel(QObject *parent = nullptr) : QAbstractTableModel(parent) {
+        // Initialize your data here
+    }
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override {
+        // Implement the number of rows in your model
+        return 2 /* your row count */;
+    }
+
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override {
+        // Implement the number of columns in your model
+        return 2; // We have 2 columns: Text and ColorPattern
+    }
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override {
+        if (!index.isValid())
+            return QVariant();
+
+        if (role == Qt::DisplayRole) {
+            // For Text column
+            if (index.column() == 0) {
+                // Implement data retrieval for Text column
+                // Here you would return the data for the specified row and column
+                return "Sample Text"; // Replace this with your actual data
+            }
+            // For ColorPattern column
+            else if (index.column() == 1) {
+                // Implement data retrieval for ColorPattern column
+                // Here you would return the color pattern data for the specified row and column
+                return QColor::fromRgb(QRandomGenerator::global()->generate()); // Generate random color for demonstration
+            }
+        }
+
+        return QVariant();
+    }
+
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override {
+        if (role == Qt::DisplayRole) {
+            if (orientation == Qt::Horizontal) {
+                // Provide column names for the header
+                switch (section) {
+                case 0: return "Text";
+                case 1: return "ColorPattern";
+                }
+            } else if (orientation == Qt::Vertical) {
+                // Provide row numbers for vertical header
+                return section + 1; // Start numbering from 1
+            }
+        }
+        return QVariant();
+    }
+};
+
+class CustomItemDelegate : public QStyledItemDelegate {
+public:
+    CustomItemDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {}
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override {
+        QStyledItemDelegate::paint(painter, option, index);
+
+        if (index.column() == 1) { // For the ColorPattern column
+            // Retrieve the color pattern from the model data
+            QColor colorPattern = index.data(Qt::DisplayRole).value<QColor>();
+            // Calculate the width of the color pattern rectangle
+            int colorWidth = 20; // Width of the color pattern rectangle
+            QRect colorRect = option.rect.adjusted(option.rect.width() - colorWidth - 1, 2, -2, -5);
+
+            // Draw the color pattern in the background
+            painter->fillRect(colorRect, colorPattern);
+        }
+    }
+};
+
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+
+    QWidget w;
+
+    CustomTableModel *model = new CustomTableModel;
+    QTableView pTable;
+    CustomItemDelegate del;
+
+    pTable.setModel(model);
+    pTable.setItemDelegate(&del);
+
+    // Show the table widget
+    pTable.show();
+
+    return app.exec();
+}
+
+/* 
+  #############################
+  #############################
+*/
+
+#include <QtWidgets>
+#include <QRandomGenerator>
+
+class CustomTableWidgetItem : public QTableWidgetItem {
+public:
+    CustomTableWidgetItem(const QString &text, const QColor &colorPattern)
+        : QTableWidgetItem(text), m_colorPattern(colorPattern)
+    {
+        setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable ); // Allow selection for items
+        setCheckState(Qt::Unchecked);
+    }
+
+    void setColorPattern(const QColor &color) {
+        m_colorPattern = color;
+    }
+
+    QColor colorPattern() const {
+        return m_colorPattern;
+    }
+
+private:
+    QColor m_colorPattern;
+};
+
+class CustomTableWidget : public QTableWidget {
+public:
+    CustomTableWidget(QWidget *parent = nullptr) : QTableWidget(parent) {}
+
+protected:
+    void paintEvent(QPaintEvent *event) override {
+        QTableWidget::paintEvent(event);
+
+        QPainter painter(viewport());
+        painter.setRenderHint(QPainter::Antialiasing);
+
+        for (int row = 0; row < rowCount(); ++row) {
+            QTableWidgetItem *item = this->item(row, 0);
+            if (!item)
+                continue;
+
+            CustomTableWidgetItem *customItem = dynamic_cast<CustomTableWidgetItem*>(item);
+            if (!customItem)
+                continue;
+
+            QColor colorPattern = customItem->colorPattern();
+
+            QRect itemRect = visualItemRect(item);
+            int colorWidth = 20; // Width of the color pattern rectangle
+            QRect colorRect = itemRect.adjusted(itemRect.width() - colorWidth - 1, 2, -2, -5);
+
+            painter.fillRect(colorRect, colorPattern);
+        }
+    }
+};
+
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+
+    // Create the custom table widget
+    CustomTableWidget tableWidget;
+    tableWidget.setColumnCount(2); // We have 2 columns
+    tableWidget.setRowCount(3);    // We have 3 rows
+
+    // Populate the table with items, text, and color patterns
+    QString text = "Sample Text"; // Replace this with your desired text
+
+    for (int row = 0; row < 3; ++row) {
+        // Set color pattern for the first column
+        QColor colorPattern = QColor::fromRgb(QRandomGenerator::global()->generate());
+        CustomTableWidgetItem *colorItem = new CustomTableWidgetItem(text, colorPattern);
+        tableWidget.setItem(row, 0, colorItem);
+
+        // Set text for the second column
+        QTableWidgetItem *textItem = new QTableWidgetItem(text);
+        tableWidget.setItem(row, 1, textItem);
+    }
+
+    // Show the custom table widget
+    tableWidget.show();
+
+    return app.exec();
+}
+
+
+
+
